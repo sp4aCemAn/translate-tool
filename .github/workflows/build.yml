@@ -1,6 +1,6 @@
 # .github/workflows/docker_image_ci.yml
 
-name: Docker Image CI
+name: Build and Push Docker Image
 
 on:
   push:
@@ -14,20 +14,27 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Log in to GitHub Container Registry
+      # NEW STEP: Convert the repository name to lowercase for the Docker tag.
+      - name: Convert repository name to lowercase
+        id: string
+        run: echo "REPO_LOWER=$(echo '${{ github.repository }}' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+
+      - name: Log in to GHCR
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }} # This is a special, auto-generated token
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v4
+      # UPDATED STEP: This now uses the lowercase repository name.
+      - name: Build and Push Docker Image
+        uses: docker/build-push-action@v5
         with:
-          context: translateserver/ # Assumes your Dockerfile is in the root of your repository
+          context: ./translateserver
           push: true
+          # Use the 'env.REPO_LOWER' variable we created in the previous step.
           tags: |
-            ghcr.io/${{ github.repository }}/translateserver:latest
-            ghcr.io/${{ github.repository }}/translateserver:${{ github.sha }}
+            ghcr.io/${{ env.REPO_LOWER }}/translateserver:latest
+            ghcr.io/${{ env.REPO_LOWER }}/translateserver:${{ github.sha }}

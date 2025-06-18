@@ -1,0 +1,21 @@
+# docker-compose.yml
+version: '3.8'
+
+services:
+  translateserver:
+    # This tells Compose to build the image from the Dockerfile in the current directory
+    build: .
+    # Name the resulting container
+    container_name: translateserver
+    # Ensure the container starts up interactively for your CLI app
+    stdin_open: true # Equivalent to docker run -i
+    tty: true        # Equivalent to docker run -t
+
+    # This section handles GPU allocation
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
