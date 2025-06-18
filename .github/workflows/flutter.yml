@@ -23,7 +23,7 @@ jobs:
           channel: 'stable'
           # Use flutter-version-file to read the version from pubspec.yaml
           # Path should be relative to the root of the repository.
-          flutter-version-file: translateui/pubspec.yaml
+          flutter-version: '3.32.4'
       # check flutter version
       - name: Verify Flutter Version
         run: flutter --version
