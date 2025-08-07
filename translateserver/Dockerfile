@@ -2,7 +2,7 @@
 # Stage 1: The "Builder"
 # This stage's only job is to download and convert the model.
 # =========================================================================
-FROM python:3.10-slim as builder
+FROM python:3.10-slim AS builder
 
 # Install only the dependencies needed for conversion
 RUN pip install --no-cache-dir ctranslate2 transformers sentencepiece
@@ -34,7 +34,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     python3 \
     python3-pip \
     && rm -rf /var/lib/apt/lists/*
-RUN pip install --no-cache-dir torch ctranslate2 transformers sentencepiece
+RUN pip install --no-cache-dir torch ctranslate2 transformers sentencepiece torch
 
 # Set the working directory
 WORKDIR /app
